@@ -1,0 +1,63 @@
+// TAME on Solana brand kit: pfp, banner, og + 8 graphics in the black + purple pixel-pet look. Live prices from the local node if running.
+// node _studio/kit.cjs [name]   (optional: TAME_API=http://localhost:8280 for live tape numbers)
+'use strict';
+const fs = require('fs'), path = require('path'), { open, sleep } = require('./cdp.cjs');
+const OUT = path.join(__dirname, '..', 'brand'), SRC = path.join(__dirname, 'kit'); fs.mkdirSync(OUT, { recursive: true }); fs.mkdirSync(SRC, { recursive: true });
+const SITE = 'tameonsol.com', X = '@TameOnSolana', API = process.env.TAME_API || 'http://localhost:8280';
+const url = (f) => 'file:///' + f.split(path.sep).join('/');
+const HEAD = (W, H) => `<!doctype html><html><head><meta charset="utf-8"><link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;600;800;900&family=Press+Start+2P&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"><style>
+*{margin:0;padding:0;box-sizing:border-box}body{width:${W}px;height:${H}px;overflow:hidden;position:relative;color:#ece6ff;font:400 22px/1.5 'Onest',sans-serif;
+  background:radial-gradient(1000px 520px at 50% -10%,rgba(169,112,255,.18),transparent 60%),linear-gradient(rgba(236,230,255,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(236,230,255,.04) 1px,transparent 1px),#07050c;background-size:auto,48px 48px,48px 48px,auto}
+.px{font-family:'Press Start 2P',monospace}.mu{color:#a99bc9}.p{color:#a970ff}.m{color:#c084fc}.bull{color:#3ee0a0}.bear{color:#ff5c7a}.mono{font-family:'JetBrains Mono',monospace}
+.h{font:900 96px/1.02 'Onest';letter-spacing:-.025em}.kick{display:inline-block;font:400 13px 'Press Start 2P';letter-spacing:.14em;color:#a970ff;border:3px solid rgba(169,112,255,.4);background:#110c1c;padding:12px 18px;border-radius:999px}
+.card{background:#110c1c;border:3px solid rgba(236,230,255,.12);border-radius:22px;box-shadow:0 6px 0 rgba(236,230,255,.07);padding:26px}
+.foot{position:absolute;left:70px;right:70px;bottom:44px;display:flex;justify-content:space-between;align-items:center;font:400 15px 'JetBrains Mono';letter-spacing:.14em;text-transform:uppercase;color:#a99bc9}.foot b{color:#a970ff;font-weight:400}
+.logo{display:flex;align-items:center;gap:14px;font:400 22px 'Press Start 2P';text-transform:none;color:#ece6ff;letter-spacing:0}.logo i{font-style:normal;color:#a970ff}
+.bub{background:#1a1229;border:2px solid rgba(236,230,255,.12);border-radius:18px;padding:14px 18px;font-size:20px}.bub.me{background:#a970ff;color:#fff;border:0}
+.meter{height:12px;background:#1a1229;border-radius:999px;overflow:hidden;margin-top:10px}.meter i{display:block;height:100%;background:linear-gradient(90deg,#a970ff,#c084fc)}
+</style></head><body>`;
+const EGG = (s = 34) => `<svg width="${s}" height="${s}" viewBox="0 0 32 32"><ellipse cx="16" cy="17" rx="11" ry="13" fill="#241838" stroke="#a970ff" stroke-width="2"/><path d="M9 14 l3 3 l-3 3 M23 14 l-3 3 l3 3" stroke="#ece6ff" stroke-width="2" fill="none"/></svg>`;
+const FOOT = () => `<div class="foot"><span class="logo">${EGG()}TA<i>ME</i></span><span>${SITE} · ${X} · <b>$TAME</b></span></div>`;
+const head = (k, t, top = 80) => `<div style="position:absolute;left:70px;right:70px;top:${top}px"><span class="kick">${k}</span><div class="h" style="margin-top:26px">${t}</div></div>`;
+const PETS = [['🐕', 'DOG', 'momentum', '+20'], ['🐈', 'CAT', 'contrarian', '−15'], ['🐹', 'HAMSTER', 'scalper · 3×', '±0'], ['🐢', 'TURTLE', 'index + gold', '+5'], ['🦜', 'PARROT', 'trades the hype', '+10']];
+async function tape() { try { const r = await fetch(API + '/api/markets'); return (await r.json()).markets; } catch { return null; } }
+const G = (T) => ({
+  'tame-pfp': [1000, 1000, () => HEAD(1000, 1000) + `<div style="position:absolute;inset:0;display:grid;place-items:center"><svg width="660" height="660" viewBox="0 0 32 32"><defs><radialGradient id="g" cx="40%" cy="35%"><stop stop-color="#3a2560"/><stop offset="1" stop-color="#1a1029"/></radialGradient></defs>
+    <ellipse cx="16" cy="17" rx="11" ry="13" fill="url(#g)" stroke="#a970ff" stroke-width="1.4"/><path d="M9.5 14 l3 3 l-3 3 M22.5 14 l-3 3 l3 3" stroke="#ece6ff" stroke-width="1.6" fill="none" stroke-linecap="round"/><path d="M13 23 q3 2 6 0" stroke="#c084fc" stroke-width="1.2" fill="none" stroke-linecap="round"/><path d="M8 9 l2 2 M7 12 l2 0" stroke="#a970ff" stroke-width=".8" opacity=".6"/></svg></div>
+    <div style="position:absolute;inset:0;background:radial-gradient(380px 380px at 50% 52%,rgba(169,112,255,.22),transparent 70%)"></div></body></html>`],
+  'tame-banner': [1500, 500, () => HEAD(1500, 500) + `<div style="position:absolute;left:70px;top:90px"><span class="kick">AGENT PETS · TOKENIZED STOCKS · SOLANA</span><div class="h" style="font-size:74px;margin-top:22px">Hatch it. Feed it.<br><span class="p">Tame it.</span> <span class="m">It trades.</span></div></div>
+    <div style="position:absolute;right:70px;top:150px;display:flex;gap:16px">${PETS.map(([e]) => `<div class="card" style="padding:18px 20px;font-size:54px">${e}</div>`).join('')}</div></body></html>`],
+  'tame-og': [1200, 630, () => HEAD(1200, 630) + `${head('SOLANA · AGENT PETS', 'Hatch it.<br>Feed it.<br><span class="p">Tame it.</span><br><span class="m">It trades.</span>', 60)}<div style="position:absolute;right:80px;top:160px;font-size:150px">🥚</div>${FOOT()}</body></html>`],
+  'tame-g01-keyart': [1600, 900, () => HEAD(1600, 900) + `${head('AGENT PETS ON SOLANA', 'A tamagotchi<br>that reads<br>the <span class="p">tape</span>.')}
+    <div style="position:absolute;right:70px;top:120px;width:640px;display:flex;flex-direction:column;gap:14px">
+      <div class="bub">🐕 <b>REX</b> · long $NVDA 2× · momentum. <span class="bull mono" style="font-size:16px;white-space:nowrap">✓ CALLED IT</span></div>
+      <div class="bub">🐈 <b>NYX</b> · fading $GME out of spite. <span class="bear mono" style="font-size:16px">✗ MISSED</span></div>
+      <div class="bub">🐢 <b>SHELDON</b> · bought $SPY. now napping.</div>
+      <div class="bub">🐹 <b>NIBBLES</b> · 3× scalp on $TSLA. heart rate: 400.</div></div>${FOOT()}</body></html>`],
+  'tame-g02-how': [1600, 900, () => HEAD(1600, 900) + `${head('HOW IT WORKS', 'Hatch. Feed. <span class="p">Tame.</span> Get scored.')}
+    <div style="position:absolute;left:70px;right:70px;top:400px;display:grid;grid-template-columns:repeat(4,1fr);gap:22px">${[['🥚', 'Hatch', 'connect Phantom, name it, it starts with $1,000'], ['🍖', 'Feed', 'hungry pets stop trading, sad pets panic-sell'], ['🎯', 'Tame', 'whisper orders; it obeys as often as it respects you'], ['🧾', 'Scored', 'every call checked against the tape 30 min later']].map(([e, a, b], i) => `<div class="card"><div class="px mu" style="font-size:11px">STEP ${i + 1}</div><div style="font-size:52px;margin:14px 0">${e}</div><div style="font:800 30px 'Onest'">${a}</div><div class="mu" style="font-size:19px;margin-top:8px">${b}</div></div>`).join('')}</div>${FOOT()}</body></html>`],
+  'tame-g03-species': [1600, 900, () => HEAD(1600, 900) + `${head('THE SPECIES', 'Five temperaments.<br><span class="p">Five strategies.</span>')}
+    <div style="position:absolute;left:70px;right:70px;top:440px;display:grid;grid-template-columns:repeat(5,1fr);gap:18px">${PETS.map(([e, n, s, o]) => `<div class="card" style="text-align:center"><div style="font-size:72px">${e}</div><div class="px" style="font-size:14px;margin:16px 0 10px">${n}</div><div class="mu" style="font-size:18px">${s}</div><div class="mono p" style="font-size:16px;margin-top:10px">${o} obedience</div></div>`).join('')}</div>${FOOT()}</body></html>`],
+  'tame-g04-stats': [1600, 900, () => HEAD(1600, 900) + `${head('THE FOUR STATS', 'Care changes<br>how it <span class="p">trades</span>.')}
+    <div style="position:absolute;right:70px;top:110px;width:680px;display:flex;flex-direction:column;gap:16px">${[['😊 MOOD', 'sad pets panic-sell', 72], ['⚡ ENERGY', 'under 15 = too hungry to trade', 55], ['🎯 TAME', 'sets the obedience roll', 38], ['📏 DISCIPLINE', 'caps leverage + size', 64]].map(([a, b, w]) => `<div class="card" style="padding:20px 24px"><div style="display:flex;justify-content:space-between"><b class="px" style="font-size:13px">${a}</b><span class="mu" style="font-size:17px">${b}</span></div><div class="meter"><i style="width:${w}%"></i></div></div>`).join('')}</div>${FOOT()}</body></html>`],
+  'tame-g05-whisper': [1600, 900, () => HEAD(1600, 900) + `${head('WHISPER ORDERS', 'Tell it what<br>to trade.<br><span class="p">It might listen.</span>')}
+    <div class="card" style="position:absolute;right:70px;top:120px;width:640px;display:flex;flex-direction:column;gap:14px">
+      <div class="bub me" style="align-self:flex-end">long $NVDA, 2x</div><div class="bub">🐕 obeying. long $NVDA 2× @ $186.20. good human.<div class="mono mu" style="font-size:14px;margin-top:4px">REX · tame 81 · obeyed</div></div>
+      <div class="bub me" style="align-self:flex-end">short $GME</div><div class="bub">🐈 no. fading $SPY instead. you're not my real dad.<div class="mono mu" style="font-size:14px;margin-top:4px">NYX · tame 23 · defied</div></div>
+      <div class="mono p" style="font-size:16px;text-align:center;margin-top:6px">P(obey) = tame + species modifier · 5% to 95%</div></div>${FOOT()}</body></html>`],
+  'tame-g06-tape': [1600, 900, () => HEAD(1600, 900) + `${head('THE TAPE', '22 tokenized<br>stocks, <span class="p">live</span>.', 70)}
+    <div style="position:absolute;left:70px;right:70px;top:420px;display:grid;grid-template-columns:repeat(6,1fr);gap:12px">${(T || []).slice(0, 18).map((m) => `<div class="card" style="padding:14px 16px"><div style="font:800 20px 'Onest'">$${m.sym}</div><div class="mono mu" style="font-size:17px">$${m.px >= 100 ? m.px.toFixed(2) : m.px.toFixed(3)}</div></div>`).join('') || ['AAPL', 'NVDA', 'TSLA', 'GME', 'SPY', 'COIN'].map((s) => `<div class="card"><b>$${s}</b></div>`).join('')}</div>${FOOT()}</body></html>`],
+  'tame-g07-breed': [1600, 900, () => HEAD(1600, 900) + `${head('BREEDING', 'Two pets.<br><span class="p">One heir.</span>')}
+    <div style="position:absolute;right:70px;top:130px;width:680px"><div style="display:flex;align-items:center;justify-content:center;gap:26px;font-size:90px">🐕<span class="p" style="font-size:50px">×</span>🐈<span class="p" style="font-size:50px">=</span>🥚</div>
+      <div class="card" style="margin-top:24px"><div class="px p" style="font-size:12px;margin-bottom:14px">GEN 2 · CHILD GENOME</div><div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;font-size:18px" class="mono">${[['size', '14%'], ['leverage', '2.1×'], ['patience', '52s'], ['max pos', '3'], ['obedience', '+4'], ['mutation', '±12%']].map(([a, b]) => `<div style="background:#1a1229;border-radius:12px;padding:12px"><span class="mu">${a}</span><br><b style="font-size:24px">${b}</b></div>`).join('')}</div></div></div>${FOOT()}</body></html>`],
+  'tame-g08-roadmap': [1600, 900, () => HEAD(1600, 900) + `${head('ROADMAP', 'From kennel<br>to <span class="p">colosseum</span>.')}
+    <div style="position:absolute;left:70px;right:70px;top:420px;display:grid;grid-template-columns:repeat(4,1fr);gap:20px">${[['PHASE 1 · LIVE', ['hatch, care, whisper', '22 live tokenized stocks', 'calls scored vs tape', 'breeding', 'Phantom on Solana'], 1], ['PHASE 2', ['$TAME launch', 'rare holder species', 'weekly Best in Show']], ['PHASE 3', ['on-chain pet ownership', 'pet transfers', 'pet vs pet duels']], ['PHASE 4', ['pets trade Solana xStocks', 'real deposits per pet', 'open pet API']]].map(([p, xs, d]) => `<div class="card" style="${d ? 'border-color:rgba(169,112,255,.6)' : ''}"><div class="px p" style="font-size:11px;margin-bottom:12px">${p}</div>${xs.map((x) => `<div style="padding:8px 0;border-top:1px solid rgba(236,230,255,.1);font-size:18px;${d ? '' : 'color:#a99bc9'}">${d ? '<span class="p">✓ </span>' : ''}${x}</div>`).join('')}</div>`).join('')}</div>${FOOT()}</body></html>`],
+});
+(async () => {
+  const only = process.argv[2], T = await tape(); const c = await open('about:blank', 1600, 900, 9000 + Math.floor(Math.random() * 90));
+  for (const [name, [W, H, html]] of Object.entries(G(T))) { if (only && !name.includes(only)) continue;
+    const f = path.join(SRC, name + '.html'); fs.writeFileSync(f, html());
+    await c.send('Emulation.setDeviceMetricsOverride', { width: W, height: H, deviceScaleFactor: 1, mobile: false }); await c.send('Page.navigate', { url: url(f) }); await sleep(1800); await c.ev('document.fonts.ready.then(()=>1)'); await sleep(500);
+    await c.shot(path.join(OUT, name + '.png')); console.log('ok', name); }
+  c.close(); process.exit(0);
+})().catch((e) => { console.error(e); process.exit(1); });

@@ -1,0 +1,19 @@
+<!doctype html><html><head><meta charset="utf-8"><link href="https://fonts.googleapis.com/css2?family=Onest:wght@800;900&family=Press+Start+2P&family=JetBrains+Mono&display=swap" rel="stylesheet"><style>
+*{margin:0;padding:0;box-sizing:border-box}body{width:1920px;height:1080px;overflow:hidden;position:relative;color:#ece6ff;font-family:Onest;background:radial-gradient(1200px 600px at 50% -10%,rgba(169,112,255,.2),transparent 60%),linear-gradient(rgba(236,230,255,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(236,230,255,.04) 1px,transparent 1px),#07050c;background-size:auto,60px 60px,60px 60px,auto}
+.s{position:absolute;left:0;right:0;text-align:center;opacity:0}.h{font:900 150px/1 Onest;letter-spacing:-.03em}.p{color:#a970ff}.m{color:#c084fc}.k{font:400 22px 'Press Start 2P';letter-spacing:.16em;color:#a970ff}
+.pets{position:absolute;left:0;right:0;bottom:180px;display:flex;justify-content:center;gap:40px}.pet{font-size:110px;background:#110c1c;border:4px solid rgba(236,230,255,.12);border-radius:30px;padding:20px 28px;box-shadow:0 8px 0 rgba(236,230,255,.07)}
+.bub{position:absolute;background:#1a1229;border:3px solid rgba(169,112,255,.5);border-radius:26px;padding:22px 30px;font:800 34px Onest;opacity:0}
+.foot{position:absolute;left:0;right:0;bottom:70px;text-align:center;font:400 24px 'JetBrains Mono';letter-spacing:.16em;color:#a99bc9;opacity:0}.foot b{color:#a970ff;font-weight:400}
+</style></head><body>
+<div class="s" id="a" style="top:250px"><div class="k">AGENT PETS · SOLANA</div><div class="h" style="margin-top:34px">Hatch it.</div></div>
+<div class="s" id="b" style="top:250px"><div class="h">Feed it.</div></div>
+<div class="s" id="c" style="top:250px"><div class="h p">Tame it.</div></div>
+<div class="s" id="d" style="top:250px"><div class="h m">It trades.</div><div style="font:800 40px Onest;color:#a99bc9;margin-top:30px">22 tokenized stocks · every call scored</div></div>
+<div class="bub" id="w1" style="left:300px;top:540px">🐕 long $NVDA. obeyed. ✓</div><div class="bub" id="w2" style="right:300px;top:600px">🐈 short $GME? no. ✗</div>
+<div class="s" id="z" style="top:300px"><div class="h" style="font-size:210px;font-family:'Press Start 2P';font-weight:400">TA<span class="p">ME</span></div><div class="k" style="margin-top:50px">HATCH YOURS · TAMEONSOL.COM</div></div>
+<div class="pets" id="pets"><div class="pet" id="p0">🐕</div><div class="pet" id="p1">🐈</div><div class="pet" id="p2">🐹</div><div class="pet" id="p3">🐢</div><div class="pet" id="p4">🦜</div></div>
+<div class="foot" id="ft">tameonsol.com · @TameOnSolana · <b>$TAME</b></div>
+<script>const $=(i)=>document.getElementById(i),cl=(v)=>Math.max(0,Math.min(1,v)),win=(t,a,b,f=.35)=>cl(Math.min((t-a)/f,(b-t)/f));
+const show=(id,t,a,b)=>{const o=win(t,a,b);$(id).style.opacity=o;$(id).style.transform='translateY('+((1-o)*24)+'px) scale('+(.96+o*.04)+')'};
+window.__seek=(t)=>{show('a',t,.2,2.6);show('b',t,2.8,5);show('c',t,5.2,7.4);show('d',t,7.6,10.4);show('w1',t,8.4,10.4);show('w2',t,9,10.4);show('z',t,10.7,99);$('ft').style.opacity=cl((t-11)/.5);
+ for(let i=0;i<5;i++){const e=$('p'+i);e.style.transform='translateY('+(Math.sin(t*4+i)*10-(t>10.6?0:0))+'px)';e.style.opacity=t>10.6?Math.max(.25,1-(t-10.6)):1}}</script></body></html>
