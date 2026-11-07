@@ -2,7 +2,7 @@
 
 ## Handle
 ```
-@TameOnSolana
+@TameOnSOL
 ```
 
 ## Display name

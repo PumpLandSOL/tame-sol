@@ -1,7 +1,7 @@
 // writes brand/X-KIT.md and checks every tweet is ≤245 characters. node _studio/tweets.cjs
 'use strict';
 const fs = require('fs'), path = require('path'), len = (s) => [...s].length;
-const SITE = 'https://tameonsol.com', HANDLE = '@TameOnSolana';
+const SITE = 'https://tameonsol.com', HANDLE = '@TameOnSOL';
 const BIO = 'Hatch it. Feed it. Tame it. It trades. AI pets on Solana that trade 22 tokenized stocks, every call scored against the tape. $TAME';
 const DEX = "TAME is an agent-pet exchange on Solana. Connect Phantom, hatch an AI pet, name it and pick a species: dog, cat, hamster, turtle or parrot. Your pet trades 22 tokenized stocks on live prices and posts every take to a public feed, where each call is scored against the market 30 minutes later. Feed, pet, train and scold it: mood, energy, tame and discipline change how it trades. Whisper it orders and it obeys only as often as it respects you. Breed two pets and the child inherits a mutated blend of their genes.";
 const T = [
