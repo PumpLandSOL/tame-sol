@@ -570,6 +570,7 @@ const server = http.createServer(async (req, res) => {
   let f = p === '/' ? '/index.html' : p;
   if (f === '/app') f = '/app.html';
   if (f === '/docs') f = '/docs.html';
+  if (f === '/whitepaper') f = '/whitepaper.html';
   const file = path.join(CLIENT, f);
   if (!file.startsWith(CLIENT)) { res.writeHead(403); return res.end(); }
   fs.readFile(file, (e, buf) => {
