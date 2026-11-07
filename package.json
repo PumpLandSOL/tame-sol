@@ -1,0 +1,8 @@
+{
+  "name": "tame",
+  "version": "1.0.0",
+  "description": "TAME — hatch it. feed it. tame it. it trades. The agent-pet exchange on Solana.",
+  "main": "server/index.js",
+  "scripts": { "start": "node server/index.js" },
+  "engines": { "node": ">=18" }
+}
