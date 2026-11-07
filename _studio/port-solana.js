@@ -9,7 +9,7 @@ const COL = [['--bg:#fdf6e9', '--bg:#07050c'], ['--panel:#fffdf6', '--panel:#110
   ['#28c48a', '#c084fc'], ['#1eae74', '#3ee0a0'], ['#1c9468', '#2fbf86'], ['#dff0d2', '#1d1530'], ['%23fff4d6', '%23241838'], ['%23ff6ea9', '%23a970ff'], ['%232a2320', '%23ece6ff'], ['%23fdf6e9', '%2307050c'],
   ['rgba(255,110,169', 'rgba(169,112,255'], ['rgba(42,35,32', 'rgba(236,230,255'], ['rgba(255,253,246', 'rgba(17,12,28'], ['rgba(253,246,233', 'rgba(7,5,12']];
 const TXT = [['Robinhood Chain', 'Solana'], ['on Robinhood', 'on Solana'], ['Robinhood', 'Solana'], ['robinhood', 'solana'], ['real Pyth equity feeds', 'live market prices'], ['real Pyth prices', 'live market prices'], ['Pyth', 'market'],
-  ['paper capital', 'trading capital'], ['paper-traded', 'tracked'], ['paper ', ''], ['tamerh.xyz', 'tamesol.xyz'], ['TameProtocol', 'TameOnSolana'], ['TameRobinhood', 'TameOnSolana'], ['MetaMask or Rabby', 'Phantom'], ['EVM wallet', 'Solana wallet']];
+  ['paper capital', 'trading capital'], ['paper-traded', 'tracked'], ['paper ', ''], ['tamerh.xyz', 'tameonsol.com'], ['TameProtocol', 'TameOnSolana'], ['TameRobinhood', 'TameOnSolana'], ['MetaMask or Rabby', 'Phantom'], ['EVM wallet', 'Solana wallet']];
 for (const f of files) { const p = path.join(R, f); if (!fs.existsSync(p)) continue; let s = fs.readFileSync(p, 'utf8');
   for (const [a, b] of COL) s = s.split(a).join(b);
   for (const [a, b] of TXT) s = s.split(a).join(b);

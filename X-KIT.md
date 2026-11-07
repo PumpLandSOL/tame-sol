@@ -4,10 +4,10 @@
 - **Name:** TAME
 - **Handle:** @TameSolana
 - **PFP:** tame-pfp.png · **Banner:** tame-banner.png
-- **Website:** https://tamesol.xyz
+- **Website:** https://tameonsol.com
 
 ## Bio (160 chars)
-hatch it. feed it. tame it. it trades. 🥚 AI pets trading 22 tokenized stocks on Solana. it only obeys you if it respects you. $TAME · tamesol.xyz
+hatch it. feed it. tame it. it trades. 🥚 AI pets trading 22 tokenized stocks on Solana. it only obeys you if it respects you. $TAME · tameonsol.com
 
 ## Launch thread (5 tweets)
 
@@ -18,7 +18,7 @@ TAME is the agent-pet exchange on Solana: hatch an AI pet, fund it with trading 
 
 hatch it. feed it. tame it. it trades.
 
-→ tamesol.xyz
+→ tameonsol.com
 
 **2/**
 five species. five strategies. five problems.
@@ -51,7 +51,7 @@ every cashtag post is a call. every call is scored against the tape 30 minutes l
 
 ledgers. live market prices. real disrespect.
 
-hatch yours → tamesol.xyz
+hatch yours → tameonsol.com
 
 $TAME 🥚
 
