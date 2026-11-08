@@ -198,7 +198,12 @@ const SHELTER = [
 
 // ---------- state ----------
 let db = { pets: {}, order: [], posts: [], seq: 1, stats: { posts: 0, trades: 0, calls: 0, hits: 0, hatched: 0 } };
-try { db = Object.assign(db, JSON.parse(fs.readFileSync(DATA_PATH, 'utf8'))); } catch (e) {}
+// persistence: atomic writes (tmp + rename) with a rolling .bak, so a crash or redeploy mid-write can never wipe the kennel
+let LOADED_FROM = 'fresh';
+for (const f of [DATA_PATH, DATA_PATH + '.bak']) { try { db = Object.assign(db, JSON.parse(fs.readFileSync(f, 'utf8'))); LOADED_FROM = f; break; } catch (e) {} }
+try { fs.mkdirSync(path.dirname(DATA_PATH), { recursive: true }); } catch (e) {}
+console.log('TAME data: ' + DATA_PATH + ' · loaded from ' + LOADED_FROM + ' · ' + Object.values(db.pets).filter((p) => p.owner).length + ' owned pets');
+if (!process.env.DATA_PATH) console.warn('⚠️ DATA_PATH is not set: pets are stored on the temporary disk and are lost on every redeploy. Mount a Render disk at /data and set DATA_PATH=/data/tame.json');
 
 function genesOf(species) { const sp = SPECIES[species];
   return { sizeFrac: sp.sizeFrac, lev: sp.lev, cooldownS: sp.cooldownS, maxPos: sp.maxPos, obey: sp.obey }; }
@@ -216,7 +221,13 @@ for (const s of SHELTER) {
   db.pets[s.id].blurb = s.blurb;
 }
 let DIRTY = false; const dirty = () => { DIRTY = true; };
-setInterval(() => { if (DIRTY) { DIRTY = false; try { fs.writeFileSync(DATA_PATH, JSON.stringify(db)); } catch (e) {} } }, 2500);
+let SAVE_ERR = null, LAST_SAVE = 0;
+function saveNow() { try { const tmp = DATA_PATH + '.tmp', json = JSON.stringify(db); fs.writeFileSync(tmp, json);
+    fs.renameSync(tmp, DATA_PATH);
+    try { fs.writeFileSync(DATA_PATH + '.bak', json); } catch (e) {}
+    SAVE_ERR = null; LAST_SAVE = now(); } catch (e) { SAVE_ERR = String(e.message || e); console.error('save failed: ' + SAVE_ERR); } }
+setInterval(() => { if (DIRTY) { DIRTY = false; saveNow(); } }, 2500);
+for (const sig of ['SIGTERM', 'SIGINT']) process.on(sig, () => { saveNow(); process.exit(0); });   // Render sends SIGTERM on every deploy
 
 // ---------- websocket (hand-rolled) ----------
 const CLIENTS = new Set();
@@ -590,6 +601,7 @@ const server = http.createServer(async (req, res) => {
     dirty();
     return json(res, 200, { pet: pubPet(baby) });
   }
+  if (p === '/api/health') return json(res, 200, { dataPath: DATA_PATH, persistent: !!process.env.DATA_PATH, loadedFrom: LOADED_FROM, ownedPets: Object.values(db.pets).filter((x) => x.owner).length, lastSave: LAST_SAVE, saveError: SAVE_ERR });
   if (p === '/api/duels') { const live = db.duels.filter((d) => d.status === 'live').map(duelView), done = db.duels.filter((d) => d.status === 'done').slice(-24).reverse().map(duelView);
     const champs = db.order.map((id) => db.pets[id]).filter((x) => x.trophies).sort((x, y) => y.trophies - x.trophies).slice(0, 10).map((x) => ({ id: x.id, name: x.name, emoji: SPECIES[x.species].emoji, handle: handleOf(x), trophies: x.trophies, duels: x.duels }));
     return json(res, 200, { live, done, champs, windowMin: Math.round(DUEL_MS / 60000), total: db.stats.duels || 0 }); }
