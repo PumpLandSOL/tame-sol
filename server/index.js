@@ -15,7 +15,12 @@ const crypto = require('crypto');
 const PORT = +(process.env.PORT || 8280);
 const ROOT = path.join(__dirname, '..');
 const CLIENT = path.join(ROOT, 'client');
-const DATA_PATH = process.env.DATA_PATH || path.join(ROOT, 'data.json');
+// DATA_PATH must be writable. If its folder can't be created (e.g. DATA_PATH=/data/... but no disk is mounted), fall back to
+// the app folder so saving still works, and report it on /api/health.
+const DATA_PATH = (() => { const want = process.env.DATA_PATH || path.join(ROOT, 'data.json');
+  try { fs.mkdirSync(path.dirname(want), { recursive: true }); fs.accessSync(path.dirname(want), fs.constants.W_OK); return want; }
+  catch (e) { const alt = path.join(ROOT, 'data.json'); console.error('DATA_PATH ' + want + ' is not writable (' + e.code + '): no disk mounted? falling back to ' + alt); return alt; } })();
+const DATA_FALLBACK = !!process.env.DATA_PATH && DATA_PATH !== process.env.DATA_PATH;
 const TOKEN = 'TAME';
 const MINT = process.env.TAME_MINT || 'dA7m2DnqW6YM8stnpdgQbCu9tHRYcDEy1JVfmDBpump';   // $TAME on Solana, shown in the CA bar once set
 const START_USD = 1000;          // hatchling trading capital
@@ -607,7 +612,7 @@ const server = http.createServer(async (req, res) => {
     dirty();
     return json(res, 200, { pet: pubPet(baby) });
   }
-  if (p === '/api/health') return json(res, 200, { dataPath: DATA_PATH, persistent: !!process.env.DATA_PATH, loadedFrom: LOADED_FROM, ownedPets: Object.values(db.pets).filter((x) => x.owner).length, lastSave: LAST_SAVE, saveError: SAVE_ERR });
+  if (p === '/api/health') return json(res, 200, { dataPath: DATA_PATH, persistent: !!process.env.DATA_PATH && !DATA_FALLBACK, fallback: DATA_FALLBACK, loadedFrom: LOADED_FROM, ownedPets: Object.values(db.pets).filter((x) => x.owner).length, lastSave: LAST_SAVE, saveError: SAVE_ERR });
   if (p === '/api/duels') { const live = db.duels.filter((d) => d.status === 'live').map(duelView), done = db.duels.filter((d) => d.status === 'done').slice(-24).reverse().map(duelView);
     const champs = db.order.map((id) => db.pets[id]).filter((x) => x.trophies).sort((x, y) => y.trophies - x.trophies).slice(0, 10).map((x) => ({ id: x.id, name: x.name, emoji: SPECIES[x.species].emoji, handle: handleOf(x), trophies: x.trophies, duels: x.duels }));
     return json(res, 200, { live, done, champs, windowMin: Math.round(DUEL_MS / 60000), total: db.stats.duels || 0 }); }
