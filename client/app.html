@@ -282,7 +282,7 @@ function petCard(p){
   const roi=((p.equity/Math.max(1,p.funded)-1)*100).toFixed(1);
   return '<div class="petcard">'+
     '<div class="ptop"><div class="pav" style="border-color:'+p.color+'">'+p.emoji+'</div>'+
-    '<div style="flex:1;min-width:200px"><h3>'+esc(p.name)+' <span class="mono" style="font-size:11px;color:var(--mut)">'+p.label+' '+face(p)+'</span>'+(p.gen>1?' <span class="tagpill o" style="background:var(--gold)">GEN '+p.gen+'</span>':'')+'</h3>'+
+    '<div style="flex:1;min-width:200px"><h3>'+esc(p.name)+' <span class="mono" style="font-size:11px;color:var(--mut)">'+p.label+' '+face(p)+'</span>'+(p.gen>1?' <span class="tagpill o" style="background:var(--gold)">GEN '+p.gen+'</span>':'')+(p.streak?' <span class="tagpill o" style="background:'+(p.streakAlive?'var(--gold)':'var(--mut)')+'">🔥 '+p.streak+' DAY STREAK</span>':' <span class="mono" style="font-size:11px;color:var(--gold)">care today to start a 🔥 streak (+$100)</span>')+'</h3>'+
     '<div class="ph">'+esc(p.handle)+' · obeys you '+p.obeyChance+'% of the time · '+p.fans+' fans'+(p.parents&&p.parents.length?' · child of '+esc(p.parents[0])+' × '+esc(p.parents[1]):'')+'</div></div>'+
     '<button class="btn btn-mint" onclick="fund(\''+p.id+'\')">💰 Fund +$500</button></div>'+
     meter('MOOD',p.mood,'var(--pink)')+meter('ENERGY',p.energy,'var(--gold)')+meter('TAME',p.tame,'var(--mint)')+meter('DISCIPLINE',p.discipline,'var(--blu)')+

@@ -467,7 +467,7 @@ function pubPet(p) {
     breedReady: Math.max(0, ((p.breedAt || 0) + BREED_CD) - now()),
     equity: equityOf(p), funded: p.funded, usd: p.usd, trades: p.trades, wins: p.wins, losses: p.losses,
     hitRate: p.calls.total ? Math.round(100 * p.calls.hits / p.calls.total) : null, calls: p.calls, fans: p.fans,
-    trophies: p.trophies || 0, duels: p.duels || { w: 0, l: 0, t: 0 }, duelReady: Math.max(0, (p.duelAt || 0) + DUEL_CD - now()), inDuel: liveDuelOf(p.id) ? liveDuelOf(p.id).id : null,
+    streak: p.streak || 0, bestStreak: p.bestStreak || 0, streakAlive: p.streakDay != null && p.streakDay >= Math.floor(now() / 864e5) - 1, trophies: p.trophies || 0, duels: p.duels || { w: 0, l: 0, t: 0 }, duelReady: Math.max(0, (p.duelAt || 0) + DUEL_CD - now()), inDuel: liveDuelOf(p.id) ? liveDuelOf(p.id).id : null,
     positions: p.positions.map((pos) => ({ sym: pos.sym, side: pos.side, lev: pos.lev, entry: r6(pos.entry),
       pnlPct: MKT[pos.sym] && MKT[pos.sym].px ? r2((pos.side === 'long' ? MKT[pos.sym].px / pos.entry - 1 : 1 - MKT[pos.sym].px / pos.entry) * pos.lev * 100) : 0 })),
     equityHist: p.equityHist.slice(-120),
@@ -553,6 +553,12 @@ const server = http.createServer(async (req, res) => {
     pet.care[d.action] = now();
     act.apply(pet);
     mkPost(pet.id, voice(pet, act.post));
+    // daily care streak: first care of each UTC day extends the streak and pays a capital bonus ($100 × streak, max $1,000/day)
+    const day = Math.floor(now() / 864e5); let streakBonus = 0;
+    if (pet.streakDay !== day) { pet.streak = pet.streakDay === day - 1 ? (pet.streak || 0) + 1 : 1; pet.streakDay = day; pet.bestStreak = Math.max(pet.bestStreak || 0, pet.streak);
+      streakBonus = Math.min(1000, 100 * pet.streak, Math.max(0, MAX_USD_FUNDED + 10000 - pet.funded));
+      if (streakBonus > 0) { pet.usd = r2(pet.usd + streakBonus); pet.funded += streakBonus; db.stats.streakPaid = (db.stats.streakPaid || 0) + streakBonus; }
+      mkPost(pet.id, '🔥 day ' + pet.streak + ' care streak. the owner showed up again' + (streakBonus ? ' and my bag grew +$' + streakBonus + '.' : '.')); }
     dirty();
     return json(res, 200, { pet: pubPet(pet) });
   }
