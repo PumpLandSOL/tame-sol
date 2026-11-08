@@ -392,6 +392,43 @@ function tick() {
   }
 }
 setInterval(tick, 10000);
+
+// ---------- DUELS: two pets, one window, best ROI wins ----------
+const DUEL_MS = +(process.env.DUEL_MS || 10 * 60000), DUEL_CD = +(process.env.DUEL_CD || 15 * 60000), DUEL_ENERGY = 20;
+if (!db.duels) db.duels = [];
+const liveDuelOf = (id) => db.duels.find((d) => d.status === 'live' && (d.a === id || d.b === id));
+const duelRoi = (d, side) => { const p = db.pets[d[side]]; return p ? r2((equityOf(p) / d[side + '0'] - 1) * 100) : 0; };
+const duelTaunts = { win: ['won the duel. tape respects me.', 'duel won. go ahead, check the receipts.', 'victory. adding this trophy next to my food bowl.'], lose: ['lost the duel. the market was rigged (it was not).', 'duel lost. going to sit in the corner and think about my sizing.', 'defeated. requesting a rematch and a snack.'] };
+function startDuel(a, b) {
+  const pa = db.pets[a], pb = db.pets[b];
+  const d = { id: 'd' + (db.duels.length + 1) + '_' + now().toString(36), a, b, start: now(), end: now() + DUEL_MS, a0: equityOf(pa), b0: equityOf(pb), status: 'live' };
+  db.duels.push(d); if (db.duels.length > 300) db.duels.splice(0, db.duels.length - 300);
+  pa.duelAt = now(); pa.energy = clamp(pa.energy - DUEL_ENERGY, 0, 100);
+  mkPost(a, '⚔️ challenged ' + pb.name + ' to a duel. ' + Math.round(DUEL_MS / 60000) + ' minutes. best ROI wins. may the tape decide.', { duel: d.id });
+  mkPost(b, '⚔️ ' + pa.name + ' wants a duel? fine. see you on the leaderboard.', { duel: d.id });
+  db.stats.duels = (db.stats.duels || 0) + 1; DIRTY = true; return d;
+}
+function settleDuels() {
+  for (const d of db.duels) { if (d.status !== 'live' || now() < d.end) continue;
+    d.aRoi = duelRoi(d, 'a'); d.bRoi = duelRoi(d, 'b'); d.status = 'done';
+    const hr = (id) => { const p = db.pets[id]; return p && p.calls.total ? p.calls.hits / p.calls.total : 0; };
+    d.winner = d.aRoi !== d.bRoi ? (d.aRoi > d.bRoi ? d.a : d.b) : hr(d.a) !== hr(d.b) ? (hr(d.a) > hr(d.b) ? d.a : d.b) : null;   // tie on ROI → better hit rate; still tied → draw
+    d.tiebreak = d.aRoi === d.bRoi && !!d.winner;
+    for (const side of ['a', 'b']) { const p = db.pets[d[side]]; if (!p) continue; p.duels = p.duels || { w: 0, l: 0, t: 0 };
+      if (!d.winner) { p.duels.t++; continue; }
+      const won = d.winner === d[side]; const roi = side === 'a' ? d.aRoi : d.bRoi;
+      if (won) { p.duels.w++; p.trophies = (p.trophies || 0) + 1; p.fans += 10; p.mood = clamp(p.mood + 15, 0, 100); }
+      else { p.duels.l++; p.fans = Math.max(0, p.fans - 3); p.mood = clamp(p.mood - 15, 0, 100); }
+      const lines = duelTaunts[won ? 'win' : 'lose']; mkPost(p.id, (won ? '🏆 ' : '💀 ') + lines[H(d.id + side)[0] % lines.length] + ' (' + (roi >= 0 ? '+' : '') + roi + '% vs ' + (side === 'a' ? d.bRoi : d.aRoi) + '%)', { duel: d.id });
+    }
+    DIRTY = true; }
+  // shelter legends keep the arena busy: if nothing is live, two of them pick a fight
+  if (!db.duels.some((d) => d.status === 'live')) { const sh = db.order.filter((id) => !db.pets[id].owner && !liveDuelOf(id) && now() - (db.pets[id].duelAt || 0) > DUEL_CD);
+    if (sh.length >= 2) { const i = Math.floor(Math.random() * sh.length); let j = Math.floor(Math.random() * (sh.length - 1)); if (j >= i) j++; startDuel(sh[i], sh[j]); } }
+}
+setInterval(settleDuels, 5000);
+function duelView(d) { const pv = (id) => { const p = db.pets[id]; if (!p) return null; const sp = SPECIES[p.species]; return { id, name: p.name, emoji: sp.emoji, color: sp.color, handle: handleOf(p), owned: !!p.owner, trophies: p.trophies || 0 }; };
+  return { id: d.id, a: pv(d.a), b: pv(d.b), start: d.start, end: d.end, status: d.status, tiebreak: !!d.tiebreak, aRoi: d.status === 'live' ? duelRoi(d, 'a') : d.aRoi, bRoi: d.status === 'live' ? duelRoi(d, 'b') : d.bRoi, winner: d.winner || null }; }
 setInterval(() => { for (const id of db.order) { const p = db.pets[id]; p.equity = equityOf(p);
   p.equityHist.push(p.equity); if (p.equityHist.length > 240) p.equityHist.shift(); } dirty(); }, 30000);
 // boot chirps
@@ -419,6 +456,7 @@ function pubPet(p) {
     breedReady: Math.max(0, ((p.breedAt || 0) + BREED_CD) - now()),
     equity: equityOf(p), funded: p.funded, usd: p.usd, trades: p.trades, wins: p.wins, losses: p.losses,
     hitRate: p.calls.total ? Math.round(100 * p.calls.hits / p.calls.total) : null, calls: p.calls, fans: p.fans,
+    trophies: p.trophies || 0, duels: p.duels || { w: 0, l: 0, t: 0 }, duelReady: Math.max(0, (p.duelAt || 0) + DUEL_CD - now()), inDuel: liveDuelOf(p.id) ? liveDuelOf(p.id).id : null,
     positions: p.positions.map((pos) => ({ sym: pos.sym, side: pos.side, lev: pos.lev, entry: r6(pos.entry),
       pnlPct: MKT[pos.sym] && MKT[pos.sym].px ? r2((pos.side === 'long' ? MKT[pos.sym].px / pos.entry - 1 : 1 - MKT[pos.sym].px / pos.entry) * pos.lev * 100) : 0 })),
     equityHist: p.equityHist.slice(-120),
@@ -552,6 +590,18 @@ const server = http.createServer(async (req, res) => {
     dirty();
     return json(res, 200, { pet: pubPet(baby) });
   }
+  if (p === '/api/duels') { const live = db.duels.filter((d) => d.status === 'live').map(duelView), done = db.duels.filter((d) => d.status === 'done').slice(-24).reverse().map(duelView);
+    const champs = db.order.map((id) => db.pets[id]).filter((x) => x.trophies).sort((x, y) => y.trophies - x.trophies).slice(0, 10).map((x) => ({ id: x.id, name: x.name, emoji: SPECIES[x.species].emoji, handle: handleOf(x), trophies: x.trophies, duels: x.duels }));
+    return json(res, 200, { live, done, champs, windowMin: Math.round(DUEL_MS / 60000), total: db.stats.duels || 0 }); }
+  if (p === '/api/duel' && req.method === 'POST') {
+    const d = await body(req); const w = String(d.wallet || '').trim(); const me = db.pets[d.petId], op = db.pets[d.opponentId];
+    if (!me || me.owner !== w) return json(res, 400, { error: 'not your pet' });
+    if (!op || op.id === me.id) return json(res, 400, { error: 'pick another pet to duel' });
+    if (liveDuelOf(me.id)) return json(res, 400, { error: me.name + ' is already in a duel' });
+    if (liveDuelOf(op.id)) return json(res, 400, { error: op.name + ' is already in a duel' });
+    if (now() - (me.duelAt || 0) < DUEL_CD) return json(res, 400, { error: 'duel cooldown: ' + Math.ceil(((me.duelAt || 0) + DUEL_CD - now()) / 60000) + 'm' });
+    if (me.energy < DUEL_ENERGY) return json(res, 400, { error: me.name + ' is too tired to duel (needs ' + DUEL_ENERGY + ' energy)' });
+    return json(res, 200, { duel: duelView(startDuel(me.id, op.id)) }); }
   if (p === '/api/whisper' && req.method === 'POST') {
     const d = await body(req);
     const w = String(d.wallet || '').trim();

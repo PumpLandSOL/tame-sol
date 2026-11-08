@@ -1,0 +1,25 @@
+<!doctype html><html><head><meta charset="utf-8"><link href="https://fonts.googleapis.com/css2?family=Onest:wght@600;800;900&family=Press+Start+2P&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet"><style>
+*{margin:0;padding:0;box-sizing:border-box}body{width:1920px;height:1080px;overflow:hidden;position:relative;color:#ece6ff;font-family:Onest;background:radial-gradient(1200px 600px at 50% -10%,rgba(169,112,255,.22),transparent 60%),linear-gradient(rgba(236,230,255,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(236,230,255,.04) 1px,transparent 1px),#07050c;background-size:auto,60px 60px,60px 60px,auto}
+.s{position:absolute;left:0;right:0;text-align:center;opacity:0}.h{font:900 140px/1 Onest;letter-spacing:-.03em}.p{color:#a970ff}.mu{color:#a99bc9}.k{font:400 22px 'Press Start 2P';letter-spacing:.16em;color:#a970ff}
+#duel{position:absolute;left:240px;right:240px;top:300px;background:#110c1c;border:4px solid rgba(169,112,255,.55);border-radius:36px;padding:50px 60px;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;opacity:0;box-shadow:0 0 60px rgba(169,112,255,.2)}
+.side{text-align:center;padding:24px;border-radius:26px}.av{width:170px;height:170px;margin:0 auto;border-radius:50%;border:6px solid;display:grid;place-items:center;font-size:96px;background:#1a1229}.nm{font:900 46px Onest;margin-top:18px}.roi{font:700 70px 'JetBrains Mono';margin-top:8px}
+.vs{text-align:center}.vs .px{font:400 52px 'Press Start 2P';color:#a970ff}.vs .t{font:700 34px 'JetBrains Mono';color:#a99bc9;margin-top:22px}
+.win{background:rgba(245,196,106,.1);box-shadow:inset 0 0 0 4px rgba(245,196,106,.6)}
+.foot{position:absolute;left:0;right:0;bottom:70px;text-align:center;font:400 24px 'JetBrains Mono';letter-spacing:.16em;color:#a99bc9;opacity:0}.foot b{color:#a970ff;font-weight:400}
+</style></head><body>
+<div class="s" id="a" style="top:330px"><div class="k">NEW ON TAME</div><div class="h" style="margin-top:36px">⚔️ The Arena</div></div>
+<div class="s" id="b" style="top:120px"><div class="h" style="font-size:90px">Pet vs pet. <span class="p">10 minutes.</span></div></div>
+<div id="duel"><div class="side" id="sa"><div class="av" style="border-color:#f5a623">🐕</div><div class="nm">REX</div><div class="roi" id="ra">+0.00%</div></div>
+  <div class="vs"><div class="px">VS</div><div class="t" id="clk">10:00</div></div>
+  <div class="side" id="sb"><div class="av" style="border-color:#c084fc">🐈</div><div class="nm">NYX</div><div class="roi" id="rb">+0.00%</div></div></div>
+<div class="s" id="c" style="top:880px"><div style="font:900 52px Onest"><span style="color:#f5c46a">🏆 REX wins</span> · +1 trophy · +10 fans · NYX sulks</div></div>
+<div class="s" id="z" style="top:310px"><div class="h">Best ROI <span class="p">wins.</span></div><div style="font:800 44px Onest;color:#a99bc9;margin-top:34px">challenge any pet · earn trophies · climb the Champions board</div><div class="k" style="margin-top:50px">TAMEONSOL.COM/APP</div></div>
+<div class="foot" id="ft">tameonsol.com · @TameOnSOL · <b>$TAME</b></div>
+<script>const $=(i)=>document.getElementById(i),cl=(v)=>Math.max(0,Math.min(1,v)),win=(t,a,b,f=.4)=>cl(Math.min((t-a)/f,(b-t)/f));
+const show=(id,t,a,b)=>{const o=win(t,a,b);$(id).style.opacity=o;$(id).style.transform='translateY('+((1-o)*24)+'px)'};
+const ra=(x)=>2.4*Math.sin(x*1.3)+x*0.42+Math.sin(x*5.1)*.35, rb=(x)=>-.8*Math.sin(x*1.1+1)+x*0.08+Math.sin(x*4.3)*.4;
+const f=(v)=>(v>=0?'+':'')+v.toFixed(2)+'%';
+window.__seek=(t)=>{show('a',t,.2,2.6);show('b',t,2.8,11.6);const o=win(t,2.9,11.6);$('duel').style.opacity=o;
+ const p=cl((t-3.6)/6.4),x=p*9; const A=ra(x),Bv=rb(x); $('ra').textContent=f(A);$('rb').textContent=f(Bv);$('ra').style.color=A>=0?'#3ee0a0':'#ff5c7a';$('rb').style.color=Bv>=0?'#3ee0a0':'#ff5c7a';
+ const sec=Math.round((1-p)*600);$('clk').textContent=String(Math.floor(sec/60))+':'+String(sec%60).padStart(2,'0');
+ const done=t>=10.1;$('sa').classList.toggle('win',done&&A>Bv);$('sb').classList.toggle('win',done&&Bv>A);show('c',t,10.2,11.6);show('z',t,11.8,99);$('ft').style.opacity=cl((t-12.2)/.5)}</script></body></html>

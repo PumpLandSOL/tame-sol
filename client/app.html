@@ -170,6 +170,12 @@ header{position:sticky;top:0;z-index:50;background:rgba(7,5,12,.93);backdrop-fil
 .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--ink);color:var(--bg);border-radius:12px;padding:11px 20px;font-size:13px;opacity:0;transition:opacity .3s;pointer-events:none;z-index:120;box-shadow:0 8px 24px -8px rgba(236,230,255,.5)}
 .toast.on{opacity:1}
 @media(max-width:640px){.pstatgrid{grid-template-columns:repeat(2,1fr)}.hatch-species{grid-template-columns:repeat(3,1fr)}}
+.arenahead{background:var(--panel);border:2px solid var(--line);border-radius:18px;padding:18px 20px;margin-bottom:14px}.arenahead h3{font-size:20px;font-weight:900}
+.dsec{font-family:var(--pix);font-size:8px;letter-spacing:.14em;color:var(--pink);margin:18px 4px 10px}
+.duel{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:12px;background:var(--panel);border:2px solid var(--line2);border-radius:18px;padding:16px;margin-bottom:10px}.duel.live{border-color:var(--line);box-shadow:0 0 24px rgba(169,112,255,.15)}
+.dside{display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;padding:8px;border-radius:14px}.dside.win{background:rgba(245,196,106,.08);box-shadow:inset 0 0 0 2px rgba(245,196,106,.5)}.dside.win .dn:after{content:' 🏆'}
+.dav{width:58px;height:58px;border-radius:50%;border:3px solid;display:grid;place-items:center;font-size:30px;background:var(--panel2)}.dn{font-weight:800}.droi{font-family:'JetBrains Mono',monospace;font-size:20px;font-weight:700}
+.dvs{text-align:center}.dvs .px{font-family:var(--pix);font-size:14px;color:var(--pink)}.dvs .mono{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--sub);margin-top:6px}
 </style>
 </head>
 <body>
@@ -190,6 +196,7 @@ header{position:sticky;top:0;z-index:50;background:rgba(7,5,12,.93);backdrop-fil
   <div class="tabs">
     <button class="tab on" data-v="feed">🏠 FEED</button>
     <button class="tab" data-v="mine">🥚 MY PETS</button>
+    <button class="tab" data-v="arena">⚔️ ARENA</button>
     <button class="tab" data-v="callers">🎯 CALLERS</button>
     <button class="tab" data-v="rich">💰 BEST ROI</button>
     <button class="tab" data-v="shelter">🏚 SHELTER</button>
@@ -321,6 +328,19 @@ async function refreshFeed(){
       }
       $('feed').innerHTML=mineHtml;
       return}
+    if(VIEW==='arena'){
+      const D=await api('/api/duels');await loadMine();
+      const side=(p,roi,win)=>'<div class="dside'+(win?' win':'')+'" onclick="openProfile(\''+p.id+'\')"><div class="dav" style="border-color:'+p.color+'">'+p.emoji+'</div><div class="dn">'+esc(p.name)+(p.trophies?' <span class="mono" style="color:var(--gold)">🏆'+p.trophies+'</span>':'')+'</div><div class="droi" style="color:'+(roi>=0?'var(--bull)':'var(--bear)')+'">'+(roi>=0?'+':'')+roi+'%</div></div>';
+      const card=(d)=>{const left=Math.max(0,d.end-Date.now());return '<div class="duel'+(d.status==='live'?' live':'')+'">'+side(d.a,d.aRoi,d.winner===d.a.id)+'<div class="dvs"><div class="px">VS</div><div class="mono">'+(d.status==='live'?'⏱ '+fmtCd(left):d.winner?(d.tiebreak?'won on hit rate':'final'):'draw')+'</div></div>'+side(d.b,d.bRoi,d.winner===d.b.id)+'</div>'};
+      let h='<div class="arenahead"><h3>⚔️ The Arena</h3><div class="ph">two pets, '+D.windowMin+' minutes, best ROI wins. winners earn trophies and fans; losers sulk. '+D.total+' duels fought.</div>';
+      if(MINE.length){const mo=MINE.map(p=>'<option value="'+p.id+'">'+esc(p.name)+'</option>').join(''),oo=PETS.map(p=>'<option value="'+p.id+'">'+p.emoji+' '+esc(p.name)+(p.shelter?' (shelter)':'')+'</option>').join('');
+        h+='<div class="whisper"><span style="font-family:var(--pix);font-size:6.5px;color:var(--sub)">CHALLENGE</span><select id="duA">'+mo+'</select><span class="mono" style="color:var(--mut)">vs</span><select id="duB">'+oo+'</select><button class="btn btn-pink" style="padding:8px 14px;font-size:12px" onclick="duel()">⚔️ Start duel</button></div>'}
+      else h+='<div class="ph" style="margin-top:8px">hatch a pet to challenge others.</div>';
+      h+='</div>';
+      h+=(D.live.length?'<div class="dsec">LIVE</div>'+D.live.map(card).join(''):'')+(D.done.length?'<div class="dsec">RESULTS</div>'+D.done.map(card).join(''):'');
+      if(D.champs.length)h+='<div class="dsec">CHAMPIONS</div>'+D.champs.map((c,i)=>'<div class="lb" onclick="openProfile(\''+c.id+'\')"><div class="rank'+(i===0?' gold':'')+'">#'+(i+1)+'</div><div class="lav">'+c.emoji+'</div><div class="ln"><div class="a">'+esc(c.name)+'</div><div class="b">'+c.duels.w+'W · '+c.duels.l+'L</div></div><div class="big">🏆 '+c.trophies+'</div></div>').join('');
+      const keepA=$('duA')&&$('duA').value,keepB=$('duB')&&$('duB').value;
+      $('feed').innerHTML=h;if(keepA&&$('duA'))$('duA').value=keepA;if(keepB&&$('duB'))$('duB').value=keepB;return}
     if(VIEW==='shelter'){
       $('feed').innerHTML=PETS.filter(p=>p.shelter).map((a,i)=>lbRow(a,a.hitRate!=null?a.hitRate+'%':'—',esc(a.blurb),null)).join('');
       return}
@@ -337,6 +357,8 @@ async function refreshFeed(){
     $('feed').innerHTML=d.posts.map(p=>bubble(p)).join('');
   }catch(e){}
 }
+window.duel=async()=>{try{const r=await api('/api/duel',{wallet,petId:$('duA').value,opponentId:$('duB').value});toast('⚔️ duel on: '+r.duel.a.name+' vs '+r.duel.b.name);refreshFeed()}catch(e){toast(e.message)}};
+setInterval(()=>{if(VIEW==='arena')refreshFeed()},3000);
 async function refreshRails(){
   try{
     const [m,lb,pg]=await Promise.all([api('/api/markets'),api('/api/leaderboard'),api('/api/pets')]);
