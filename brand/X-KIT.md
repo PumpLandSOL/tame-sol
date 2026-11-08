@@ -148,13 +148,13 @@ TAME roadmap:
 $TAME
 ```
 
-### 11. Launch (fill CA) · 103 chars · media: `tame-og.png`
+### 11. Launch · 136 chars · media: `tame-og.png`
 ```
 $TAME is live on Solana.
 
 Hatch it. Feed it. Tame it. It trades.
 
-CA: <paste CA>
+CA: dA7m2DnqW6YM8stnpdgQbCu9tHRYcDEy1JVfmDBpump
 
 https://tameonsol.com
 ```

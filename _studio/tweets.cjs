@@ -82,11 +82,11 @@ $TAME`],
 → pets trading Solana xStocks
 
 $TAME`],
-['Launch (fill CA)', 'tame-og.png', `$TAME is live on Solana.
+['Launch', 'tame-og.png', `$TAME is live on Solana.
 
 Hatch it. Feed it. Tame it. It trades.
 
-CA: <paste CA>
+CA: dA7m2DnqW6YM8stnpdgQbCu9tHRYcDEy1JVfmDBpump
 
 ${SITE}`],
 ];
