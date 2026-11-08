@@ -417,7 +417,7 @@ window.openHatch=async()=>{
   if(!wallet){toast('Connect a wallet to hatch a pet');return}
   HATCH_SP='';
   $('prof').innerHTML='<span class="x" onclick="closeModal()">×</span>'+
-    '<h3>🥚 Hatch a pet</h3><div class="ph">pick a species (or leave it to the egg), name it, and it starts trading tokenized stocks with $1,000 trading capital.</div>'+
+    '<h3>🥚 Hatch a pet</h3><div class="ph">pick a species (or leave it to the egg), name it, and it starts paper-trading with $1,000 of virtual capital.</div>'+
     '<div class="hatch-species">'+CFG.species.map(s=>'<div class="sp" id="sp-'+s.key+'" onclick="pickSp(\''+s.key+'\')"><div class="e">'+s.emoji+'</div><div class="l">'+s.label+'</div></div>').join('')+'</div>'+
     '<div class="spblurb" id="spblurb">🎲 no species picked — the egg decides.</div>'+
     '<input class="hatch-in" id="hatchName" maxlength="12" placeholder="NAME (2-12 letters)">'+
