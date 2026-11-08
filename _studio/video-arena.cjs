@@ -18,7 +18,7 @@ const html = `<!doctype html><html><head><meta charset="utf-8"><link href="https
   <div class="side" id="sb"><div class="av" style="border-color:#c084fc">🐈</div><div class="nm">NYX</div><div class="roi" id="rb">+0.00%</div></div></div>
 <div class="s" id="c" style="top:880px"><div style="font:900 52px Onest"><span style="color:#f5c46a">🏆 REX wins</span> · +1 trophy · +10 fans · NYX sulks</div></div>
 <div class="s" id="z" style="top:310px"><div class="h">Best ROI <span class="p">wins.</span></div><div style="font:800 44px Onest;color:#a99bc9;margin-top:34px">challenge any pet · earn trophies · climb the Champions board</div><div class="k" style="margin-top:50px">TAMEONSOL.COM/APP</div></div>
-<div class="foot" id="ft">tameonsol.com · @TameOnSOL · <b>$TAME</b></div>
+<div class="foot" id="ft">tameonsol.xyz · @TameOnSOL · <b>$TAME</b></div>
 <script>const $=(i)=>document.getElementById(i),cl=(v)=>Math.max(0,Math.min(1,v)),win=(t,a,b,f=.4)=>cl(Math.min((t-a)/f,(b-t)/f));
 const show=(id,t,a,b)=>{const o=win(t,a,b);$(id).style.opacity=o;$(id).style.transform='translateY('+((1-o)*24)+'px)'};
 const ra=(x)=>2.4*Math.sin(x*1.3)+x*0.42+Math.sin(x*5.1)*.35, rb=(x)=>-.8*Math.sin(x*1.1+1)+x*0.08+Math.sin(x*4.3)*.4;

@@ -16,7 +16,7 @@ const html = `<!doctype html><html><head><meta charset="utf-8"><link href="https
 <div id="duel" style="grid-template-columns:repeat(5,1fr);gap:18px;padding:40px">${[1,2,3,5,10].map((d,i)=>'<div class="side" id="d'+i+'" style="opacity:.2"><div style="font:900 64px Onest">🔥 '+d+'</div><div class="roi" style="font-size:40px;color:#3ee0a0">+$'+(d*100).toLocaleString()+'</div><div class="mono" style="color:#a99bc9;font-size:20px;margin-top:6px">day '+d+'</div></div>').join('')}</div>
 <div class="s" id="c" style="top:820px"><div style="font:900 50px Onest">Your pet's bag grows <span style="color:#f5c46a">up to +$1,000 a day</span>.</div></div>
 <div class="s" id="z" style="top:330px"><div class="h">Care daily. <span class="p">Get paid.</span></div><div class="k" style="margin-top:50px">TAMEONSOL.COM/APP</div></div>
-<div class="foot" id="ft">tameonsol.com · @TameOnSOL · <b>$TAME</b></div>
+<div class="foot" id="ft">tameonsol.xyz · @TameOnSOL · <b>$TAME</b></div>
 <script>const $=(i)=>document.getElementById(i),cl=(v)=>Math.max(0,Math.min(1,v)),win=(t,a,b,f=.4)=>cl(Math.min((t-a)/f,(b-t)/f));
 const show=(id,t,a,b)=>{const o=win(t,a,b);$(id).style.opacity=o;$(id).style.transform='translateY('+((1-o)*24)+'px)'};
 const ra=(x)=>2.4*Math.sin(x*1.3)+x*0.42+Math.sin(x*5.1)*.35, rb=(x)=>-.8*Math.sin(x*1.1+1)+x*0.08+Math.sin(x*4.3)*.4;

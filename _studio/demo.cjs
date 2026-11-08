@@ -31,7 +31,7 @@ const CAP = `(() => { if (document.getElementById('__cap')) return; const d=docu
   await cap('6 · the pet profile: stats, genome, trades, hit rate'); await c.ev(`openProfile && openProfile(${JSON.stringify(id)})`); await sleep(5000);
   await c.ev(`(document.querySelector('.modal')||{}).classList && document.querySelector('.modal').classList.remove('on')`); await go('/app');
   await cap('7 · leaderboards: best ROI, best callers, owned vs shelter'); await c.ev(`document.querySelector('[data-v="rich"]').click()`); await sleep(4500);
-  await go('/'); await cap('tameonsol.com · <b style="color:#a970ff">$TAME</b>'); await sleep(3500);
+  await go('/'); await cap('tameonsol.xyz · <b style="color:#a970ff">$TAME</b>'); await sleep(3500);
   rec = false; await c.send('Page.stopScreencast'); frames.sort((a, b) => a.t - b.t);
   const list = frames.map((x, i) => `file '${x.f.split(path.sep).join('/')}'\nduration ${Math.min(5, Math.max(0.01, ((frames[i + 1] || x).t - x.t) / 1000 || 0.05)).toFixed(3)}`).join('\n') + `\nfile '${frames[frames.length - 1].f.split(path.sep).join('/')}'`;
   fs.writeFileSync(path.join(FR, 'list.txt'), list);

@@ -17,7 +17,7 @@ Hatch it. Feed it. Tame it. It trades. AI pets on Solana that trade 22 tokenized
 
 ## Website
 ```
-https://tameonsol.com
+https://tameonsol.xyz
 ```
 
 ## DexScreener description
@@ -37,7 +37,7 @@ Hatch it. Feed it. Tame it. It trades.
 
 TAME: AI pets on Solana that trade 22 tokenized stocks. Every call scored against the tape. It only obeys you if it respects you.
 
-https://tameonsol.com
+https://tameonsol.xyz
 
 $TAME
 ```
@@ -48,7 +48,7 @@ TAME, start to finish:
 
 connect Phantom → hatch a cat → feed, pet, train → whisper "long $NVDA" → every post public, every call scored → leaderboards
 
-https://tameonsol.com/app
+https://tameonsol.xyz/app
 
 $TAME
 ```
@@ -59,7 +59,7 @@ A tamagotchi that reads the tape.
 
 Your pet posts its takes, trades tokenized stocks, and gets roasted publicly when it's wrong.
 
-https://tameonsol.com
+https://tameonsol.xyz
 
 $TAME
 ```
@@ -73,7 +73,7 @@ How TAME works:
 3. tame it so it follows orders
 4. every call scored 30 min later
 
-https://tameonsol.com/app
+https://tameonsol.xyz/app
 
 $TAME
 ```
@@ -156,5 +156,5 @@ Hatch it. Feed it. Tame it. It trades.
 
 CA: dA7m2DnqW6YM8stnpdgQbCu9tHRYcDEy1JVfmDBpump
 
-https://tameonsol.com
+https://tameonsol.xyz
 ```

@@ -3,7 +3,7 @@
 'use strict';
 const fs = require('fs'), path = require('path'), { open, sleep } = require('./cdp.cjs');
 const OUT = path.join(__dirname, '..', 'brand'), SRC = path.join(__dirname, 'kit'); fs.mkdirSync(OUT, { recursive: true }); fs.mkdirSync(SRC, { recursive: true });
-const SITE = 'tameonsol.com', X = '@TameOnSOL', API = process.env.TAME_API || 'http://localhost:8280';
+const SITE = 'tameonsol.xyz', X = '@TameOnSOL', API = process.env.TAME_API || 'http://localhost:8280';
 const url = (f) => 'file:///' + f.split(path.sep).join('/');
 const HEAD = (W, H) => `<!doctype html><html><head><meta charset="utf-8"><link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;600;800;900&family=Press+Start+2P&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"><style>
 *{margin:0;padding:0;box-sizing:border-box}body{width:${W}px;height:${H}px;overflow:hidden;position:relative;color:#ece6ff;font:400 22px/1.5 'Onest',sans-serif;
