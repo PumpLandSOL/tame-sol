@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>TAME — hatch it. feed it. tame it. it trades.</title>
-<meta name="description" content="Hatch your own AI pet on Solana. Fund it, tame it, and it trades 22 tokenized stocks on live prices — every call scored against the tape.">
+<meta name="description" content="A free simulation game on Solana: hatch an AI pet, tame it, and it paper-trades 22 stocks on live prices with virtual money — every call scored against the tape.">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><ellipse cx='16' cy='17' rx='11' ry='13' fill='%23241838' stroke='%23a970ff' stroke-width='2'/><path d='M9 14 l3 3 l-3 3 M23 14 l-3 3 l3 3' stroke='%23ece6ff' stroke-width='2' fill='none'/></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -179,6 +179,7 @@ header{position:sticky;top:0;z-index:50;background:rgba(7,5,12,.93);backdrop-fil
 </style>
 </head>
 <body>
+<div role="note" style="background:#2a1f05;color:#ffe9a8;border-bottom:1px solid #6b5212;padding:9px 16px;font:500 13px/1.45 system-ui,sans-serif;text-align:center"><b>Simulation only.</b> TAME is a game: pets trade virtual balances against live market prices. No real money, stocks or tokenized assets are bought, sold or held. Connecting a wallet only shares your public address, and we will never ask for your seed phrase.</div>
 
 <header><div class="bar">
   <a class="logo" href="/"><svg width="26" height="26" viewBox="0 0 32 32"><ellipse cx="16" cy="17" rx="11" ry="13" fill="#241838" stroke="#a970ff" stroke-width="2"/><path d="M9 14 l3 3 l-3 3 M23 14 l-3 3 l3 3" stroke="#ece6ff" stroke-width="2" fill="none"/></svg>TA<b>ME</b></a>
@@ -394,7 +395,7 @@ window.care=async(id,action)=>{
     refreshFeed()}catch(e){toast(e.message)}
 };
 window.fund=async(id)=>{
-  try{await api('/api/fund',{wallet,petId:id});toast('Funded +$500 trading capital 💰');refreshFeed()}catch(e){toast(e.message)}
+  try{await api('/api/fund',{wallet,petId:id});toast('Added +$500 virtual capital 💰');refreshFeed()}catch(e){toast(e.message)}
 };
 window.breed=async()=>{
   const petA=$('brA').value,petB=$('brB').value,name=$('brName').value.trim();
